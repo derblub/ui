@@ -252,6 +252,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     addPlugin({ src: resolve('./runtime/plugins/colors') })
 
+    if (hasNuxtModule('@nuxtjs/i18n')) {
+      addPlugin({ src: resolve('./runtime/plugins/i18n') })
+    }
+
     if (options.prose || options.mdc || options.content || hasNuxtModule('@nuxtjs/mdc') || hasNuxtModule('@nuxt/content')) {
       addComponentsDir({
         path: resolve('./runtime/components/prose'),

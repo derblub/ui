@@ -8,6 +8,8 @@ import type { Resolver } from '@nuxt/kit'
 import type { ModuleOptions } from './module'
 import { applyDefaultVariants, applyPrefixToObject, applyUnstyled } from './utils/theme'
 import { detectUsedComponents } from './utils/components'
+import { generateLocalesTemplate, getLocaleKeys } from './utils/locales'
+import type { I18nLocale } from './utils/locales'
 import * as theme from './theme'
 import * as themeProse from './theme/prose'
 import * as themeContent from './theme/content'
@@ -382,6 +384,20 @@ export {}
       return image ? genExport(image.filePath, [{ name: image.export, as: 'default' }]) : 'export default "img"'
     }
   })
+
+  if (nuxt && resolve) {
+    templates.push({
+      filename: 'ui-locales.ts',
+      write: true,
+      getContents: () => {
+        const localeDir = resolve('./runtime/locale')
+        // Resolved by `@nuxtjs/i18n`, including layers
+        const { locales = [] } = (nuxt.options.runtimeConfig.public.i18n || {}) as { locales?: I18nLocale[] }
+
+        return generateLocalesTemplate(locales, getLocaleKeys(localeDir), localeDir)
+      }
+    })
+  }
 
   return templates
 }
